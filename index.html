@@ -95,10 +95,76 @@ footer nav{display:flex;flex-wrap:wrap;justify-content:center}
 #player input[type=file]{font-size:.8rem;color:var(--muted);width:100%}
 #player label{font-size:.78rem;color:var(--muted)}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}#splash{transition:none}}
+
+/* ===== ANIMATION & TRAU CHUỐT ===== */
+@property --ang{syntax:'<angle>';initial-value:0deg;inherits:false}
+#progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3));box-shadow:0 0 12px var(--c1)}
+#glow{position:fixed;width:360px;height:360px;left:0;top:0;margin:-180px 0 0 -180px;border-radius:50%;pointer-events:none;z-index:-1;background:radial-gradient(circle,rgba(155,107,255,.18),transparent 65%);transition:opacity .3s}
+.orb.a{animation:drift 18s ease-in-out infinite alternate}
+.orb.b{animation:drift 22s ease-in-out infinite alternate-reverse}
+@keyframes drift{to{transform:translate(120px,80px) scale(1.2)}}
+/* splash */
+#splash small,#splash h1,#splash p,#splash .loadwrap,#splash #enter{opacity:0;transform:translateY(18px);animation:up .8s cubic-bezier(.2,.8,.2,1) forwards}
+#splash small{animation-delay:.1s}#splash h1{animation-delay:.3s}#splash p{animation-delay:.55s}#splash .loadwrap{animation-delay:.7s}
+#splash #enter{animation:none;pointer-events:none}
+#splash.ready #enter{animation:up .7s cubic-bezier(.2,.8,.2,1) forwards,pulse 2.4s 1s infinite;pointer-events:auto}
+#splash.ready .loadwrap{opacity:0;transition:opacity .4s;animation:none}
+@keyframes up{to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{box-shadow:0 0 24px rgba(77,226,255,.35)}50%{box-shadow:0 0 50px rgba(155,107,255,.7)}}
+#splash h1{background-size:250% 100%;animation:up .8s .3s cubic-bezier(.2,.8,.2,1) forwards,shine 5s linear infinite}
+@keyframes shine{to{background-position:250% 0}}
+#splash::before{content:"";position:absolute;width:min(520px,90vw);aspect-ratio:1;border-radius:50%;border:1px solid var(--line);box-shadow:0 0 80px rgba(155,107,255,.15) inset;animation:spin 30s linear infinite;pointer-events:none}
+#splash::after{content:"";position:absolute;width:min(380px,70vw);aspect-ratio:1;border-radius:50%;border:1px dashed var(--line);animation:spin 20s linear infinite reverse;pointer-events:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loadwrap{width:min(260px,70vw);height:3px;background:var(--line);border-radius:3px;overflow:hidden}
+.loadwrap i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--c1),var(--c3));animation:load 1.6s .8s ease-out forwards}
+@keyframes load{to{width:100%}}
+/* hero entrance (chạy sau khi vào) */
+body.entered #home>*{animation:up .9s cubic-bezier(.2,.8,.2,1) both}
+body.entered #home>*:nth-child(2){animation-delay:.12s}body.entered #home>*:nth-child(3){animation-delay:.24s}body.entered #home>*:nth-child(4){animation-delay:.36s}
+body:not(.entered) #home>*{opacity:0}
+#home h2 em{background-size:220% 100%;animation:shine 6s linear infinite}
+/* nút: quét sáng + từ tính */
+.btn{position:relative;overflow:hidden;transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .2s,box-shadow .3s}
+.btn::after{content:"";position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);transition:left .6s}
+.btn:hover::after{left:140%}
+.btn:active{transform:scale(.96)}
+/* thẻ: spotlight + viền chạy */
+.card,.app{position:relative;transition:transform .25s ease-out,border-color .3s,box-shadow .3s;transform-style:preserve-3d}
+.card::before,.app::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(120,140,255,.18),transparent 70%)}
+.card:hover::before,.app:hover::before{opacity:1}
+.app:hover{box-shadow:0 12px 40px rgba(155,107,255,.18)}
+.space .card:first-child{border:1px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,conic-gradient(from var(--ang),var(--c1),var(--c2),var(--c3),var(--c1)) border-box;animation:rot 6s linear infinite}
+@keyframes rot{to{--ang:360deg}}
+.avatar{animation:float 4s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px) rotate(3deg)}}
+.step{transition:transform .3s,color .3s}.step:hover{transform:translateX(8px)}
+/* marquee */
+.marquee{overflow:hidden;border-block:1px solid var(--line);padding:.8rem 0;background:rgba(10,12,30,.5);white-space:nowrap}
+.marquee div{display:inline-block;animation:slide 28s linear infinite;font:700 1.1rem Orbitron;letter-spacing:.2em;color:var(--muted)}
+.marquee span{margin:0 1.6rem}.marquee span:nth-child(3n){color:var(--c1)}
+@keyframes slide{to{transform:translateX(-50%)}}
+/* reveal khi cuộn */
+.rv{opacity:0;transform:translateY(34px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+.app{animation:pop .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*70ms)}
+@keyframes pop{from{opacity:0;transform:translateY(24px) scale(.96)}}
+.save.beat{animation:beat .4s}
+@keyframes beat{40%{transform:scale(1.5)}}
+/* equalizer trên nút nhạc */
+.eq{display:none;gap:2px;align-items:flex-end;height:12px}
+.playing .eq{display:inline-flex}
+.eq i{width:3px;background:var(--c1);border-radius:2px;animation:eq .8s ease-in-out infinite alternate}
+.eq i:nth-child(2){animation-delay:.2s}.eq i:nth-child(3){animation-delay:.4s}
+@keyframes eq{from{height:3px}to{height:12px}}
+h3.sec{background:linear-gradient(90deg,var(--text),var(--c1));-webkit-background-clip:text;background-clip:text;color:transparent}
+@media(hover:none){#glow{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.rv{opacity:1;transform:none}}
 </style>
 </head>
 <body>
 <a class="skip" href="#kho">Bỏ qua đến kho ứng dụng</a>
+<div id="progress"></div><div id="glow"></div>
 <canvas id="stars" aria-hidden="true"></canvas>
 <div class="orb a"></div><div class="orb b"></div>
 
@@ -106,6 +172,7 @@ footer nav{display:flex;flex-wrap:wrap;justify-content:center}
   <small class="display">WELCOME TO</small>
   <h1 class="display">TÊN BẠN</h1>
   <p>Khám phá ứng dụng và tiện ích iOS.</p>
+  <div class="loadwrap"><i></i></div>
   <button class="btn glow" id="enter">✦ VÀO KHÔNG GIAN CỦA TÔI</button>
 </div>
 
@@ -116,7 +183,7 @@ footer nav{display:flex;flex-wrap:wrap;justify-content:center}
     <a href="#kho">Kho ứng dụng</a>
     <a href="#congdong">Cộng đồng</a>
   </nav>
-  <button class="btn" id="musicBtn" aria-expanded="false">BẬT NHẠC ♫ ▾</button>
+  <button class="btn" id="musicBtn" aria-expanded="false"><span class="eq"><i></i><i></i><i></i></span><span id="musicTxt">BẬT NHẠC ♫ ▾</span></button>
 </header>
 
 <aside id="player" aria-label="Trình phát nhạc">
@@ -143,7 +210,8 @@ footer nav{display:flex;flex-wrap:wrap;justify-content:center}
   </div>
 </section>
 
-<section id="space">
+<div class="marquee" aria-hidden="true"><div><span>IPA</span><span>MOD GAMES</span><span>TOOLS</span><span>✦</span><span>TÊN BẠN</span><span>iOS</span><span>IPA</span><span>MOD GAMES</span><span>TOOLS</span><span>✦</span><span>TÊN BẠN</span><span>iOS</span><span>IPA</span><span>MOD GAMES</span><span>TOOLS</span><span>✦</span><span>TÊN BẠN</span><span>iOS</span><span>IPA</span><span>MOD GAMES</span><span>TOOLS</span><span>✦</span><span>TÊN BẠN</span><span>iOS</span></div></div>
+<section id="space" class="rv">
   <div class="space">
     <div class="card">
       <div class="avatar">T</div>
@@ -161,7 +229,7 @@ footer nav{display:flex;flex-wrap:wrap;justify-content:center}
   </div>
 </section>
 
-<section id="kho">
+<section id="kho" class="rv">
   <span class="tag display">01 / THE COLLECTION</span>
   <h3 class="sec">Kho ứng dụng</h3>
   <div class="tools">
@@ -178,7 +246,7 @@ footer nav{display:flex;flex-wrap:wrap;justify-content:center}
   <div id="list"></div>
 </section>
 
-<section>
+<section class="rv">
   <div class="card drop">
     <span class="tag display">NEXT DROP / ĐANG CHUẨN BỊ</span>
     <h3>Chờ bản phát hành tiếp theo.</h3>
@@ -187,7 +255,7 @@ footer nav{display:flex;flex-wrap:wrap;justify-content:center}
   </div>
 </section>
 
-<section id="congdong">
+<section id="congdong" class="rv">
   <div class="card drop">
     <span class="tag display">STAY IN THE LOOP</span>
     <h3>Có gì mới? Bạn biết trước.</h3>
@@ -315,6 +383,49 @@ $("#musicBtn").onclick = e => { const o = $("#player").classList.toggle("open");
 
 /* màn chào */
 $("#enter").onclick = () => { $("#splash").classList.add("hide"); play(); };
+
+/* ===== ANIMATION JS ===== */
+const reduce = matchMedia("(prefers-reduced-motion:reduce)").matches;
+// splash: hiện nút sau khi thanh tải chạy xong
+setTimeout(() => $("#splash").classList.add("ready"), reduce ? 0 : 2500);
+const _enter = $("#enter").onclick;
+$("#enter").onclick = () => { document.body.classList.add("entered"); _enter(); };
+// tiến trình cuộn
+addEventListener("scroll", () => { const d = document.documentElement; $("#progress").style.width = (scrollY/(d.scrollHeight-innerHeight)*100)+"%"; }, {passive:true});
+// ánh sáng theo chuột
+addEventListener("pointermove", e => { const g=$("#glow"); g.style.transform=`translate(${e.clientX}px,${e.clientY}px)`; }, {passive:true});
+// spotlight + nghiêng 3D cho thẻ
+document.addEventListener("pointermove", e => {
+  const t = e.target.closest && e.target.closest(".card,.app"); if(!t || reduce) return;
+  const r = t.getBoundingClientRect(), x = e.clientX-r.left, y = e.clientY-r.top;
+  t.style.setProperty("--mx",x+"px"); t.style.setProperty("--my",y+"px");
+  t.style.transform = `perspective(800px) rotateX(${((y/r.height)-.5)*-6}deg) rotateY(${((x/r.width)-.5)*6}deg) translateY(-3px)`;
+});
+document.addEventListener("pointerout", e => { const t = e.target.closest && e.target.closest(".card,.app"); if(t) t.style.transform=""; });
+// nút từ tính
+document.querySelectorAll(".btn.glow").forEach(b => {
+  b.addEventListener("pointermove", e => { if(reduce) return; const r=b.getBoundingClientRect(); b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.18}px,${(e.clientY-r.top-r.height/2)*.28}px)`; });
+  b.addEventListener("pointerleave", () => b.style.transform="");
+});
+// hiện dần khi cuộn
+const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } }), {threshold:.12});
+document.querySelectorAll(".rv").forEach(el => io.observe(el));
+// thẻ ứng dụng hiện lần lượt
+const _render = render;
+render = function(){ _render(); document.querySelectorAll("#list .app").forEach((a,i)=>a.style.setProperty("--i",i)); };
+render();
+// tim đập
+$("#list").addEventListener("click", e => { const b=e.target.closest(".save"); if(b) requestAnimationFrame(()=>{ const nb=document.querySelector(`.save[data-n="${CSS.escape(b.dataset.n)}"]`); nb&&nb.classList.add("beat"); }); });
+// nút nhạc: equalizer
+audio.addEventListener("play", () => $("#musicBtn").classList.add("playing"));
+audio.addEventListener("pause", () => $("#musicBtn").classList.remove("playing"));
+// sao băng
+(function(){ if(reduce) return; const c=$("#stars"), x=c.getContext("2d"); let m=null;
+  setInterval(()=>{ if(!m && Math.random()<.6) m={x:Math.random()*c.width,y:Math.random()*c.height*.4,l:0}; },2500);
+  (function f(){ if(m){ x.save(); x.globalAlpha=1-m.l/60; const g=x.createLinearGradient(m.x,m.y,m.x-90,m.y-45); g.addColorStop(0,"#fff"); g.addColorStop(1,"transparent");
+    x.strokeStyle=g; x.lineWidth=2; x.beginPath(); x.moveTo(m.x,m.y); x.lineTo(m.x-90,m.y-45); x.stroke(); x.restore(); m.x+=9; m.y+=4.5; if(++m.l>60) m=null; }
+    requestAnimationFrame(f); })();
+})();
 </script>
 </body>
 </html>
